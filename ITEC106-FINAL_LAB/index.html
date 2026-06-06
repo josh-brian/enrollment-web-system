@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enrollment Web System</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script> 
+  <!-- p.s. si claude gumawa ng lahat ng js hehe -->
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <header class="site-header">
+      <div class="header-badge">AY 2025–2026</div>
+      <h1>Student Enrollment</h1>
+      <p class="subtitle">Fill out all required fields to complete your enrollment submission.</p>
+    </header>
+
+    <main class="card">
+
+      <!-- ========================================================
+           lagay mo rito alert message
+
+           .alert, .alert-success, .alert-error
+           i2 mga class
+           ======================================================== -->
+
+      <form id="enrollmentForm" action="index.php" method="POST" novalidate> 
+        <!-- index.php muna nilagay ko -->
+
+        <div class="form-grid">
+
+          <div class="field full-width">
+            <label for="student_name">Student Name</label>
+            <input
+              type="text"
+              id="student_name"
+              name="student_name"
+              placeholder="e.g. Juan dela Cruz"
+              required
+            />
+          </div>
+
+          <div class="field half-width">
+            <label for="age">Age</label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              placeholder="e.g. 19"
+              min="15"
+              max="60"
+              required
+            />
+          </div>
+
+          <div class="field half-width">
+            <label for="section">Section</label>
+            <input
+              type="text"
+              id="section"
+              name="section"
+              placeholder="e.g. BSIT 1-1"
+              required
+            />
+          </div>
+
+          <div class="field full-width">
+            <label for="units_last_sem">Number of Units Last Semester</label>
+            <input
+              type="number"
+              id="units_last_sem"
+              name="units_last_sem"
+              placeholder="e.g. 21"
+              min="0"
+              max="30"
+              required
+            />
+          </div>
+
+          <div class="field full-width">
+            <label for="address">Address</label>
+            <textarea
+              id="address"
+              name="address"
+              rows="3"
+              placeholder="House No., Street, Barangay, City/Municipality, Province"
+              required
+            ></textarea>
+          </div>
+
+        </div>
+
+        <!-- Hidden field: auto-filled by script.js on form submit -->
+        <input type="hidden" id="datetime_submitted" name="datetime_submitted" />
+
+        <div class="form-actions">
+          <button type="reset" class="btn btn-clear">Clear Form</button>
+          <button type="submit" class="btn btn-submit">Submit Enrollment</button>
+        </div>
+
+      </form>
+
+    </main>
+
+
+  </div>
+
+</body>
+</html>
