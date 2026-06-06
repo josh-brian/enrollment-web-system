@@ -1,16 +1,8 @@
-/* =============================================
-   ENROLLMENT WEB SYSTEM — script.js
-   ITEC 106 | Cavite State University Bacoor
-   ============================================= */
-
-/**
- * Formats the current date and time into a readable string.
- * Example output: "June 06, 2025 — 10:35:22 AM"
- */
+//Get current date and time
 function getCurrentTimestamp() {
-  var now = new Date();
+  const now = new Date();
 
-  var options = {
+  const options = {
     year:   'numeric',
     month:  'long',
     day:    '2-digit',
@@ -20,19 +12,92 @@ function getCurrentTimestamp() {
     hour12: true
   };
 
-  // Returns e.g. "June 06, 2025, 10:35:22 AM"
-  // We clean it slightly for readability in the text file.
   return now.toLocaleString('en-US', options).replace(',', ' —');
 }
 
-/**
- * On form submit: fill the hidden datetime field with the
- * current timestamp BEFORE the data is sent to PHP.
- */
-var form = document.getElementById('enrollmentForm');
+//Submit form data to php
+async function submitForm(formData) {
+  try {
+    const response = await fetch("process.php", {
+      method: "POST",
+      body: formData
+    });
 
-form.addEventListener('submit', function (event) {
-  var datetimeField = document.getElementById('datetime_submitted');
+    if(!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    const result = await response.text();
+    console.log('Server response:', result);
+    return result.trim();
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Validate form data before submission
+function isInputValid(){
+  const age = document.getElementById('age');
+  const units_last_sem = document.getElementById('units_last_sem');
+  const section = document.getElementById('section');
+  const sectionPattern = /^[A-Z]+\s[\d]-[\d]+$/;
+
+  if(age.value < 15 || age.value > 100) {
+    alert('Please enter a valid age.');
+    age.classList.add('input-error');
+    return false;
+  } else {
+    age.classList.remove('input-error');
+  }
+
+  if(units_last_sem.value < 0) {
+    alert('Please enter a valid number of units. Units cannot be negative.');
+    units_last_sem.classList.add('input-error');
+    return false;
+  } else {
+    units_last_sem.classList.remove('input-error');
+  }
+
+  if(!sectionPattern.test(section.value)) {
+    alert('Please enter a valid section format (e.g., "BSIT 1-1").');
+    section.classList.add('input-error');
+    return false;
+  } else {
+    section.classList.remove('input-error');
+  }
+
+  return true;
+}
+
+const form = document.getElementById('enrollmentForm');
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  //if input is invalid, don't submit
+  if(!isInputValid()) {
+    return;
+  }
+
+  const datetimeField = document.getElementById('datetime_submitted');
   datetimeField.value = getCurrentTimestamp();
-  // Form submission continues normally to index.php via POST.
+
+  const formData = new FormData(form);
+
+  const result = await submitForm(formData);
+  console.log('Form submission result:', result);
+
+  if(result === "Success") {
+    alert('Enrollment information submitted successfully!');
+    form.reset();
+  } else {
+    console.error('Submission failed:', result);
+    alert('Failed to submit enrollment information. Please try again.');
+  }
+
+});
+
+form.addEventListener('reset', () => {
+  const errorFields = form.querySelectorAll('.input-error');
+  errorFields.forEach(field => field.classList.remove('input-error'));
 });
